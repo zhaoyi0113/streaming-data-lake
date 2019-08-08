@@ -1,11 +1,11 @@
 resource "aws_s3_bucket" "raw_bucket" {
-  bucket = "${var.s3_raw_data}"
+  bucket = "${var.S3_RAW_DATA}"
 }
 
 resource "aws_s3_bucket" "target_bucket" {
-  bucket = "${var.s3_target_data}"
+  bucket = "${var.S3_TARGET_DATA}"
 }
 
 resource "aws_s3_bucket" "s3_streaming_pipeline_bucket" {
-  bucket = "${var.s3_streaming_pipeline}"
+  bucket = "${var.S3_STREAMING_DATA}"
 }

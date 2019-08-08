@@ -8,7 +8,7 @@ variable "project_name" {
 }
 
 variable "ALPHA_VANTAGE_API_KEY" {
-  
+
 }
 
 ### S3 Bucket Variables
@@ -43,23 +43,15 @@ variable "lambda_library_layer_file_name" {
   default = "library_layer.zip"
 }
 
-
-variable "lambda_finance_producer_build_file" {
-  default = "${var.lambda_package_local_build_folder}/${var.lambda_finance_producer_file_name}"
-}
-
-variable "lambda_library_layer_build_File" {
-  default = "${var.lambda_package_local_build_folder}/${var.lambda_library_layer_file_name}"
-}
-
 variable "lambda_package_folder" {
-  default = "lambdaPackage"
+  default = "dist"
 }
 
-variable "lambda_finance_producer_file" {
-  default = "${var.lambda_package_folder}/${var.lambda_finance_producer_file_name}"
-}
 
-variable "lambad_library_layer_file" {
-  default = "${var.lambda_package_folder}/${var.lambda_library_layer_file_name}"
+
+locals {
+  lambda_finance_producer_build_file = "${var.lambda_package_local_build_folder}/${var.lambda_finance_producer_file_name}"
+  lambda_library_layer_build_File    = "${var.lambda_package_local_build_folder}/${var.lambda_library_layer_file_name}"
+  lambda_finance_producer_file       = "${var.lambda_package_folder}/${var.lambda_finance_producer_file_name}"
+  lambad_library_layer_file          = "${var.lambda_package_folder}/${var.lambda_library_layer_file_name}"
 }
