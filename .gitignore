@@ -1,0 +1,6 @@
+dist
+build
+.terraform
+*.pyc
+*.pyo
+terraform.tfstate.backup
