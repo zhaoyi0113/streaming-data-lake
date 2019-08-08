@@ -1,7 +1,7 @@
 BUILD_DIR=dist
 rm -fr $BUILD_DIR
 mkdir -p $BUILD_DIR/python
-cp requirements.txt build/python
+cp requirements.txt $BUILD_DIR/python
 cd $BUILD_DIR/python
 docker run -v $(pwd):/outputs -it --rm lambci/lambda:build-python3.7 pip install -r /outputs/requirements.txt -t /outputs/
 cd ..

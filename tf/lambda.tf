@@ -14,6 +14,7 @@ resource "aws_lambda_function" "finance_data_producer" {
   runtime       = "${var.lambda_runtime}"
   timeout       = "${var.lambda_timeout}"
   memory_size   = "512"
+  depends_on = [aws_s3_bucket.s3_streaming_pipeline_bucket]
   #   layers           = ["${aws_lambda_layer_version.lambda_python_deps_layer.arn}"]
   environment {
     variables = {
