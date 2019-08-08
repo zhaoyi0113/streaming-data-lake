@@ -40,7 +40,7 @@ variable "lambda_library_layer_file_name" {
 }
 
 variable "lambda_package_folder" {
-  default = "dist"
+  default = "lambdas"
 }
 
 

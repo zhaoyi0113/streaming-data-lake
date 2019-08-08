@@ -3,4 +3,4 @@ praw
 jsons
 pandas
 boto3
-nump
+numpy
