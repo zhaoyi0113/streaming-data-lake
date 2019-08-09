@@ -9,6 +9,7 @@ def handler(event, context):
     logger.info('receive event')
     logger.info(event)
     cryptos = event.cryptos
+    
     api = AlphaVantage(get_alpha_vantage_key())
     rates = []
     for crypto in cryptos:

@@ -18,3 +18,8 @@ requires = "*"
 
 [requires]
 python_version = "3.7"
+
+[scripts]
+build-lambda = "sh bin/build_lambdas.sh"
+build-lambda-layer = "sh bin/build_layer.sh"
+tf-apply = "terraform apply -auto-approve tf"
