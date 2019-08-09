@@ -1,6 +1,0 @@
-scrapy==1.6.0
-praw
-jsons
-pandas
-boto3
-numpy
