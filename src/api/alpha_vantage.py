@@ -22,7 +22,7 @@ class AlphaVantage:
             logging.error(e)
         return None
 
-    def request_currency_exchange_rage(self, crypto, currency = 'AUD'):
+    def request_currency_exchange_rate(self, crypto, currency = 'AUD'):
         """
         This API returns the realtime exchange rate for any pair of digital currency (e.g., Bitcoin) or physical currency (e.g., USD).
         """
