@@ -10,7 +10,8 @@ resource "aws_lambda_function" "finance_data_producer" {
   s3_key        = "${local.lambda_finance_producer_file}"
   function_name = "finance_data_producer"
   role          = "${aws_iam_role.lambda_role.arn}"
-  handler       = "lambdas.finance_data-producer.handler"
+  handler       = "lambdas.finance_data_producer.handler"
+  source_code_hash = "${filebase64sha256("${local.lambda_finance_producer_build_file}")}"
   runtime       = "${var.lambda_runtime}"
   timeout       = "${var.lambda_timeout}"
   memory_size   = "512"
@@ -48,7 +49,7 @@ EOF
 
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
   s3_bucket = "${var.S3_STREAMING_DATA}"
-  s3_key = "${locals.lambad_library_layer_file}"
+  s3_key = "${local.lambad_library_layer_file}"
   layer_name = "python_deps_layer"
   compatible_runtimes = ["${var.lambda_runtime}"]
   depends_on = [aws_s3_bucket.s3_streaming_pipeline_bucket]
