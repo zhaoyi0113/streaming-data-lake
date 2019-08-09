@@ -12,6 +12,7 @@ pandas = "*"
 boto3 = "*"
 numpy = "*"
 Scrapy = "==1.6.0"
+requires = "*"
 
 [requires]
 python_version = "3.7"
