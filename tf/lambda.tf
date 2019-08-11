@@ -6,17 +6,17 @@ variable "lambda_runtime" {
 }
 
 resource "aws_lambda_function" "finance_data_producer" {
-  s3_bucket     = "${var.S3_STREAMING_DATA}"
-  s3_key        = "${local.lambda_finance_producer_file}"
-  function_name = "finance_data_producer"
-  role          = "${aws_iam_role.lambda_role.arn}"
-  handler       = "lambdas.finance_data_producer.handler"
+  s3_bucket        = "${var.S3_STREAMING_DATA}"
+  s3_key           = "${local.lambda_finance_producer_file}"
+  function_name    = "finance_data_producer"
+  role             = "${aws_iam_role.lambda_role.arn}"
+  handler          = "lambdas.finance_data_producer.handler"
   source_code_hash = "${filebase64sha256("${local.lambda_finance_producer_build_file}")}"
-  runtime       = "${var.lambda_runtime}"
-  timeout       = "${var.lambda_timeout}"
-  memory_size   = "512"
-  depends_on    = [aws_s3_bucket.s3_streaming_pipeline_bucket]
-  layers        = ["${aws_lambda_layer_version.lambda_python_deps_layer.arn}"]
+  runtime          = "${var.lambda_runtime}"
+  timeout          = "${var.lambda_timeout}"
+  memory_size      = "512"
+  depends_on       = [aws_s3_bucket.s3_streaming_pipeline_bucket]
+  layers           = ["${aws_lambda_layer_version.lambda_python_deps_layer.arn}"]
   environment {
     variables = {
       env          = "${var.env}"
@@ -26,12 +26,11 @@ resource "aws_lambda_function" "finance_data_producer" {
 }
 
 resource "aws_iam_role" "lambda_role" {
-  name = "aws-lambda-role"
+  name = "${var.project_name}-lambda-role"
   path = "/"
 
   assume_role_policy = <<EOF
 {
-
   "Version": "2012-10-17",
   "Statement": [
     {
@@ -45,6 +44,39 @@ resource "aws_iam_role" "lambda_role" {
   ]
 }
 EOF
+}
+
+resource "aws_iam_policy" "lambda_policy" {
+  name = "${var.project_name}-lambda-policy"
+  description = "IAM Policy"
+    policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*",
+                "autoscaling:Describe*",
+                "cloudwatch:*",
+                "logs:*",
+                "sns:*",
+                "ssm:DescribeParameters",
+                "ssm:GetParameters",
+                "ssm:GetParameter",
+                "ssm:GetParametersByPath",
+                "kms:*"
+            ],
+            "Resource": "*"
+        }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "lambda-policy-attach" {
+  role = "${aws_iam_role.lambda_role.name}"
+  policy_arn = "${aws_iam_policy.lambda_policy.arn}"
 }
 
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
