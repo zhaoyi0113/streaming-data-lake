@@ -70,15 +70,30 @@ resource "aws_iam_role_policy_attachment" "firehose-stream-policy-attach" {
 
 resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
   name        = "${var.project_name}-finance-stream"
-  destination = "s3"
+  destination = "extended_s3"
 
   kinesis_source_configuration {
       kinesis_stream_arn = "${aws_kinesis_stream.finance_stream.arn}"
       role_arn = "${aws_iam_role.firehose_stream_role.arn}"
   }
-  s3_configuration {
+  extended_s3_configuration {
+    prefix = "raw/"
+    error_output_prefix = "firehose_error/"
     role_arn   = "${aws_iam_role.firehose_s3_role.arn}"
     bucket_arn = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
-    prefix = "raw/"
+    cloudwatch_logging_options {
+      enabled = "true"
+      log_group_name = "${var.project_name}/${var.env}/finance-log"
+      log_stream_name = "${var.project_name}/${var.env}/finance-stream"
+    }
   }
+}
+
+resource "aws_cloudwatch_log_group" "firehose_log" {
+  name = "${var.project_name}/${var.env}/finance-log"
+}
+
+resource "aws_cloudwatch_log_stream" "firehose_log_stream" {
+  name           = "finance-log-stream"
+  log_group_name = "${aws_cloudwatch_log_group.firehose_log.name}"
 }

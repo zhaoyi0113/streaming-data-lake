@@ -26,6 +26,8 @@ def send_to_stream(name, data):
     client = boto3.client('kinesis')
     try:
         data = json.dumps(data).encode()
+        logging.info('send to stream ')
+        logging.info(data)
         return client.put_record(StreamName=name, Data=data, PartitionKey='123')
     except Exception as e:
         logging.error(e)
