@@ -79,6 +79,15 @@ resource "aws_iam_role_policy_attachment" "lambda-policy-attach" {
   policy_arn = "${aws_iam_policy.lambda_policy.arn}"
 }
 
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_finance_producer" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.finance_data_producer.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.finance_producer_scheduler.arn}"
+}
+
+
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
   s3_bucket = "${var.S3_STREAMING_DATA}"
   s3_key = "${local.lambad_library_layer_file}"

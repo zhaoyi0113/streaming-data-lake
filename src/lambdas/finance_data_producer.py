@@ -15,5 +15,5 @@ def handler(event, context):
     for crypto in cryptos:
         rate = api.request_currency_exchange_rate(crypto)
         rates.append(rate)
-        upload_json_to_s3(bucket, 'crypto', rate)
+    upload_json_to_s3(bucket, 'crypto', rates)
     return rates
