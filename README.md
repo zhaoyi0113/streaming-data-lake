@@ -1,12 +1,13 @@
 # streaming-data-lake
 
-Build a streaming data pipeline on AWS.
+This project is to demo how to build a streaming data serverless pipeline on AWS. It inculdes AWS services such as `kinesis stream`, `kinesis firehose`, `s3`, `lambda`, `KMS`, `System manager` etc.
 
+## How to run
+
+This project is managed by `Terraform` as IaC framework. You will have to install `terraform` on your system. All other code like lambda is implemented in `python`.
 
 ## Environment Variables
 
-    - TF_VAR_S3_RAW_DATA
-    - TF_VAR_S3_TARGET_DATA
     - TF_VAR_S3_STREAMING_DATA
 
 ## Build

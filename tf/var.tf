@@ -12,14 +12,6 @@ variable "ALPHA_VANTAGE_API_KEY" {
 }
 
 ### S3 Bucket Variables
-variable "S3_RAW_DATA" {
-  default = "streaming-raw-data"
-}
-
-variable "S3_TARGET_DATA" {
-  default = "streaming-target-data"
-}
-
 variable "S3_STREAMING_DATA" {
   default = "streaming-pipeline-resources"
 }

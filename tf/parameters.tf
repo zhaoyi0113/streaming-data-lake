@@ -8,5 +8,5 @@ resource "aws_ssm_parameter" "alpha_vantage_api_key" {
 resource "aws_ssm_parameter" "raw_s3_bucket" {
   name  = "/${var.project_name}/${var.env}/raw_s3_bucket"
   type  = "String"
-  value = "${aws_s3_bucket.raw_bucket.id}"
+  value = "${aws_s3_bucket.s3_streaming_pipeline_bucket.id}"
 }

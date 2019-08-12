@@ -78,6 +78,7 @@ resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
   }
   s3_configuration {
     role_arn   = "${aws_iam_role.firehose_s3_role.arn}"
-    bucket_arn = "${aws_s3_bucket.target_bucket.arn}"
+    bucket_arn = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
+    prefix = "raw/"
   }
 }
