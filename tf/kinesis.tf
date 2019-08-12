@@ -4,8 +4,8 @@ resource "aws_kinesis_stream" "finance_stream" {
   retention_period = 24
 }
 
-resource "aws_iam_role" "firehose_s3_role" {
-  name = "firehose_s3_role"
+resource "aws_iam_role" "firehose_source_stream_role" {
+  name = "firehose_source_stream_role"
 
   assume_role_policy = <<EOF
 {
@@ -24,30 +24,10 @@ resource "aws_iam_role" "firehose_s3_role" {
 EOF
 }
 
-resource "aws_iam_role" "firehose_stream_role" {
-  name = "firehose_stream_role"
-
-  assume_role_policy = <<EOF
-{
-  "Version": "2012-10-17",
-  "Statement": [
-    {
-      "Action": "sts:AssumeRole",
-      "Principal": {
-        "Service": "firehose.amazonaws.com"
-      },
-      "Effect": "Allow",
-      "Sid": ""
-    }
-  ]
-}
-EOF
-}
-
-resource "aws_iam_policy" "firehose_stream_policy" {
-  name = "${var.project_name}-firehose-stream"
+resource "aws_iam_policy" "firehose_source_stream_policy" {
+  name        = "${var.project_name}-firehose-source-stream"
   description = "IAM Policy"
-    policy = <<EOF
+    policy    = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -63,9 +43,53 @@ resource "aws_iam_policy" "firehose_stream_policy" {
 EOF
 }
 
-resource "aws_iam_role_policy_attachment" "firehose-stream-policy-attach" {
-  role = "${aws_iam_role.firehose_stream_role.name}"
-  policy_arn = "${aws_iam_policy.firehose_stream_policy.arn}"
+resource "aws_iam_role_policy_attachment" "firehose-source-stream-policy-attach" {
+  role = "${aws_iam_role.firehose_source_stream_role.name}"
+  policy_arn = "${aws_iam_policy.firehose_source_stream_policy.arn}"
+}
+
+resource "aws_iam_role" "firehose-target-stream-role" {
+  name = "firehose_target_s3_role"
+
+  assume_role_policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Action": "sts:AssumeRole",
+      "Principal": {
+        "Service": "firehose.amazonaws.com"
+      },
+      "Effect": "Allow",
+      "Sid": ""
+    }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_policy" "firehose_target_stream_policy" {
+  name        = "${var.project_name}-firehose-target-stream"
+  description = "IAM Policy"
+    policy    = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+            "Effect": "Allow",
+            "Action": [
+                "s3:*"
+            ],
+            "Resource": "*"
+        }
+  ]
+}
+EOF
+}
+
+resource "aws_iam_role_policy_attachment" "firehose-target-stream-policy-attach" {
+  role = "${aws_iam_role.firehose-target-stream-role.name}"
+  policy_arn = "${aws_iam_policy.firehose_target_stream_policy.arn}"
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
@@ -73,18 +97,18 @@ resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
   destination = "extended_s3"
 
   kinesis_source_configuration {
-      kinesis_stream_arn = "${aws_kinesis_stream.finance_stream.arn}"
-      role_arn = "${aws_iam_role.firehose_stream_role.arn}"
+    kinesis_stream_arn = "${aws_kinesis_stream.finance_stream.arn}"
+    role_arn           = "${aws_iam_role.firehose_source_stream_role.arn}"
   }
   extended_s3_configuration {
-    prefix = "raw/"
+    prefix              = "raw/"
     error_output_prefix = "firehose_error/"
-    role_arn   = "${aws_iam_role.firehose_s3_role.arn}"
-    bucket_arn = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
+    role_arn            = "${aws_iam_role.firehose-target-stream-role.arn}"
+    bucket_arn          = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
     cloudwatch_logging_options {
-      enabled = "true"
-      log_group_name = "${var.project_name}/${var.env}/finance-log"
-      log_stream_name = "${var.project_name}/${var.env}/finance-stream"
+      enabled         = "true"
+      log_group_name  = "${aws_cloudwatch_log_group.firehose_log.name}"
+      log_stream_name = "${aws_cloudwatch_log_stream.firehose_log_stream.name}"
     }
   }
 }
@@ -94,6 +118,6 @@ resource "aws_cloudwatch_log_group" "firehose_log" {
 }
 
 resource "aws_cloudwatch_log_stream" "firehose_log_stream" {
-  name           = "finance-log-stream"
+  name           = "${var.project_name}/${var.env}/finance-log-stream"
   log_group_name = "${aws_cloudwatch_log_group.firehose_log.name}"
 }
