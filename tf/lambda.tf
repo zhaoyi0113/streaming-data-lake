@@ -1,5 +1,5 @@
 variable "lambda_timeout" {
-  default = 180
+  default = 600
 }
 variable "lambda_runtime" {
   default = "python3.7"
@@ -21,6 +21,7 @@ resource "aws_lambda_function" "finance_data_producer" {
     variables = {
       env          = "${var.env}"
       project_name = "${var.project_name}"
+      stream_name = "${var.project_name}-stream"
     }
   }
 }
@@ -65,7 +66,8 @@ resource "aws_iam_policy" "lambda_policy" {
                 "ssm:GetParameters",
                 "ssm:GetParameter",
                 "ssm:GetParametersByPath",
-                "kms:*"
+                "kms:*",
+                "kinesis:*"
             ],
             "Resource": "*"
         }
