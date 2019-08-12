@@ -1,5 +1,5 @@
 variable "lambda_timeout" {
-  default = 600
+  default = 180
 }
 variable "lambda_runtime" {
   default = "python3.7"
