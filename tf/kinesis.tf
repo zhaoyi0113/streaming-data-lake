@@ -2,6 +2,15 @@ resource "aws_kinesis_stream" "finance_stream" {
   name             = "${var.project_name}-stream"
   shard_count      = 1
   retention_period = 24
+  shard_level_metrics = [
+    "IncomingBytes",
+    "OutgoingBytes",
+    "IteratorAgeMilliseconds",
+    "OutgoingBytes",
+    "OutgoingRecords",
+    "ReadProvisionedThroughputExceeded",
+    "WriteProvisionedThroughputExceeded"
+  ]
 }
 
 resource "aws_iam_role" "firehose_source_stream_role" {
