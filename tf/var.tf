@@ -35,7 +35,9 @@ variable "lambda_package_folder" {
   default = "lambdas"
 }
 
-
+variable "glue_crawler_name" {
+  default = "finance_raw_catalog"
+}
 
 locals {
   lambda_finance_producer_build_file = "${var.lambda_package_local_build_folder}/${var.lambda_finance_producer_file_name}"

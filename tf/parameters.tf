@@ -10,3 +10,9 @@ resource "aws_ssm_parameter" "raw_s3_bucket" {
   type  = "String"
   value = "${aws_s3_bucket.s3_streaming_pipeline_bucket.id}"
 }
+
+resource "aws_ssm_parameter" "glue_crawler_name" {
+  name  = "/${var.project_name}/${var.env}/glue_crawler_name"
+  type = "String"
+  value = "${var.glue_crawler_name}"
+}

@@ -4,7 +4,7 @@ variable "glue_raw_catalog_db" {
 
 resource "aws_glue_crawler" "glue_crawler" {
   database_name = "${var.glue_raw_catalog_db}"
-  name          = "finance_raw_catalog"
+  name          = "${var.glue_crawler_name}"
   role          = "${aws_iam_role.glue_crawler_role.arn}"
   configuration = <<EOF
 {

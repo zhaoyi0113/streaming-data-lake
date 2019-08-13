@@ -26,6 +26,26 @@ resource "aws_lambda_function" "finance_data_producer" {
   }
 }
 
+resource "aws_lambda_function" "finance_crawler_trigger" {
+  s3_bucket        = "${var.S3_STREAMING_DATA}"
+  s3_key           = "${local.lambda_finance_producer_file}"
+  function_name    = "trigger_finance_crawling"
+  role             = "${aws_iam_role.lambda_role.arn}"
+  handler          = "lambdas.trigger_glue_crawler.handler"
+  source_code_hash = "${filebase64sha256("${local.lambda_finance_producer_build_file}")}"
+  runtime          = "${var.lambda_runtime}"
+  timeout          = "${var.lambda_timeout}"
+  memory_size      = "512"
+  depends_on       = [aws_s3_bucket.s3_streaming_pipeline_bucket]
+  layers           = ["${aws_lambda_layer_version.lambda_python_deps_layer.arn}"]
+  environment {
+    variables = {
+      env          = "${var.env}"
+      project_name = "${var.project_name}"
+    }
+  }
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "${var.project_name}-lambda-role"
   path = "/"
