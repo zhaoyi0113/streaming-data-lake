@@ -102,7 +102,7 @@ resource "aws_iam_role_policy_attachment" "firehose-target-stream-policy-attach"
 }
 
 resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
-  name        = "${var.project_name}-finance-stream"
+  name        = "${var.project_name}-firehose"
   destination = "extended_s3"
 
   kinesis_source_configuration {
