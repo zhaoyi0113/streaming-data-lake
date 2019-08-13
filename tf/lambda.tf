@@ -87,7 +87,8 @@ resource "aws_iam_policy" "lambda_policy" {
                 "ssm:GetParameter",
                 "ssm:GetParametersByPath",
                 "kms:*",
-                "kinesis:*"
+                "kinesis:*",
+                "glue:*"
             ],
             "Resource": "*"
         }
