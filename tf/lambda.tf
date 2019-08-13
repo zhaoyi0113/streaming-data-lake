@@ -109,6 +109,13 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_finance_producer" {
   source_arn    = "${aws_cloudwatch_event_rule.finance_producer_scheduler.arn}"
 }
 
+resource "aws_lambda_permission" "allow_bucket" {
+  statement_id  = "AllowExecutionFromS3Bucket"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.finance_crawler_trigger.arn}"
+  principal     = "s3.amazonaws.com"
+  source_arn    = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
+}
 
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
   s3_bucket = "${var.S3_STREAMING_DATA}"
