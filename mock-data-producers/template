@@ -1,1 +1,1 @@
-{"1. From_Currency Code": "BTC", "2. From_Currency Name": "Bitcoin", "3. To_Currency Code": "AUD", "4. To_Currency Name": "Australian Dollar", "5. Exchange Rate": {{random.number(20000)}}, "6. Last Refreshed": {{date.now}}, "7. Time Zone": "UTC", "8. Bid Price": "-", "9. Ask Price": "-"}
+{"CryptoCurrencyCode": "BTC", "CurrencyName": "Bitcoin", "CurrencyCode": "AUD", "To_CurrencyName": "Australian Dollar", "Rate": {{random.number(20000)}}, "6. Last Refreshed": {{date.now}}, "TimeZone": "UTC", "BidPrice": "-", "Ask Price": "-"}
