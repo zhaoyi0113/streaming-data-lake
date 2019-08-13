@@ -34,9 +34,9 @@ EOF
 }
 
 resource "aws_iam_policy" "firehose_source_stream_policy" {
-  name        = "${var.project_name}-firehose-source-stream"
+  name = "${var.project_name}-firehose-source-stream"
   description = "IAM Policy"
-    policy    = <<EOF
+  policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -53,7 +53,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "firehose-source-stream-policy-attach" {
-  role = "${aws_iam_role.firehose_source_stream_role.name}"
+  role       = "${aws_iam_role.firehose_source_stream_role.name}"
   policy_arn = "${aws_iam_policy.firehose_source_stream_policy.arn}"
 }
 
@@ -78,9 +78,9 @@ EOF
 }
 
 resource "aws_iam_policy" "firehose_target_stream_policy" {
-  name        = "${var.project_name}-firehose-target-stream"
+  name = "${var.project_name}-firehose-target-stream"
   description = "IAM Policy"
-    policy    = <<EOF
+    policy = <<EOF
 {
   "Version": "2012-10-17",
   "Statement": [
@@ -97,7 +97,7 @@ EOF
 }
 
 resource "aws_iam_role_policy_attachment" "firehose-target-stream-policy-attach" {
-  role = "${aws_iam_role.firehose-target-stream-role.name}"
+  role       = "${aws_iam_role.firehose-target-stream-role.name}"
   policy_arn = "${aws_iam_policy.firehose_target_stream_policy.arn}"
 }
 
@@ -114,6 +114,8 @@ resource "aws_kinesis_firehose_delivery_stream" "finance_firehose" {
     error_output_prefix = "firehose_error/"
     role_arn            = "${aws_iam_role.firehose-target-stream-role.arn}"
     bucket_arn          = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
+    buffer_size         = 1
+    buffer_interval     = 60
     cloudwatch_logging_options {
       enabled         = "true"
       log_group_name  = "${aws_cloudwatch_log_group.firehose_log.name}"
