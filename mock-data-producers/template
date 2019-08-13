@@ -1,1 +1,1 @@
-{"id": {{random.uuid}}, "CryptoCurrencyCode": "BTC", "CurrencyName": "Bitcoin", "CurrencyCode": "AUD", "To_CurrencyName": "Australian Dollar", "Rate": {{random.number(20000)}}, "6. Last Refreshed": {{date.now}}, "TimeZone": "UTC", "BidPrice": "-", "Ask Price": "-"}
+{"id": {{random.uuid}}, "CryptoCurrencyCode": "BTC", "CurrencyName": "Bitcoin", "CurrencyCode": "AUD", "To_CurrencyName": "Australian Dollar", "Rate": {{random.number(20000)}}, "LastRefreshed": {{date.now}}, "TimeZone": "UTC", "BidPrice": "-", "Ask Price": "-"}

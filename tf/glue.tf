@@ -6,7 +6,12 @@ resource "aws_glue_crawler" "glue_crawler" {
   database_name = "${var.glue_raw_catalog_db}"
   name          = "finance_raw_catalog"
   role          = "${aws_iam_role.glue_crawler_role.arn}"
-
+  configuration = <<EOF
+{
+    "Version": 1.0,
+    "Grouping": { "TableGroupingPolicy": "CombineCompatibleSchemas" }
+}
+EOF
   s3_target {
     path = "s3://${aws_s3_bucket.s3_streaming_pipeline_bucket.id}/raw"
   }
