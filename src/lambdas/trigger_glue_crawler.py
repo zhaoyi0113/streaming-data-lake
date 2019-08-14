@@ -19,7 +19,7 @@ def trigger_crawler(crawler_name):
 def handler(event, context):
     logger.info('receive event ' + json.dumps(event))
     try:
-        if 'Records' in event and len(event['Records']) > 0:
+        if 'Records' in event and len(event['Records']) > 0 and event['Records'][0]['eventSource'] == 'aws:s3':
             # This is s3 event
             crawler_name = get_parameter('glue_crawler_name')
             key = event['Records'][0]['s3']['object']['key']

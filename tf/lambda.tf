@@ -118,6 +118,14 @@ resource "aws_lambda_permission" "allow_bucket" {
   source_arn    = "${aws_s3_bucket.s3_streaming_pipeline_bucket.arn}"
 }
 
+resource "aws_lambda_permission" "allow_cloudwatch_to_call_glue_crawler_trigger" {
+  statement_id  = "AllowExecutionFromCloudWatch"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.finance_crawler_trigger.function_name}"
+  principal     = "events.amazonaws.com"
+  source_arn    = "${aws_cloudwatch_event_rule.crawler_state_change.arn}"
+}
+
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
   s3_bucket = "${var.S3_STREAMING_DATA}"
   s3_key = "${local.lambad_library_layer_file}"
