@@ -15,3 +15,7 @@ This project is managed by `Terraform` as IaC framework. You will have to instal
 `tarraform`, `pipenv`, `python 3.7`, `docker` are required to build the application.
 
     - run `sh bin/build_layer.sh` to build lambda layer including all lambda dependencies. During building process, a docker image `lambci/lambda` is pulled in order to build a lambda compatible version.
+
+## KDG
+
+AWS Kinesis Data Generator is used to mock a stream data producer: https://awslabs.github.io/amazon-kinesis-data-generator/web/producer.html.
