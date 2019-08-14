@@ -1,7 +1,7 @@
 resource "aws_sqs_queue" "finance_streaming_queue" {
   name                        = "finance_streaming"
   fifo_queue                  = false
-  visibility_timeout_seconds = 30
+  visibility_timeout_seconds = 200
 }
 
 resource "aws_sqs_queue_policy" "allow_cloudwatch_rule_trigger" {

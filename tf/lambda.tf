@@ -46,6 +46,29 @@ resource "aws_lambda_function" "finance_crawler_trigger" {
   }
 }
 
+resource "aws_lambda_function" "crawler_state_change_listener" {
+  s3_bucket        = "${var.S3_STREAMING_DATA}"
+  s3_key           = "${local.lambda_finance_producer_file}"
+  function_name    = "crawler_state_change_listener"
+  role             = "${aws_iam_role.lambda_role.arn}"
+  handler          = "lambdas.crawler_state_change_listener.handler"
+  source_code_hash = "${filebase64sha256("${local.lambda_finance_producer_build_file}")}"
+  runtime          = "${var.lambda_runtime}"
+  timeout          = "${var.lambda_timeout}"
+  memory_size      = "512"
+  depends_on       = [aws_s3_bucket.s3_streaming_pipeline_bucket]
+  layers           = ["${aws_lambda_layer_version.lambda_python_deps_layer.arn}"]
+  tracing_config {
+    mode = "Active"
+  }
+  environment {
+    variables = {
+      env          = "${var.env}"
+      project_name = "${var.project_name}"
+    }
+  }
+}
+
 resource "aws_iam_role" "lambda_role" {
   name = "${var.project_name}-lambda-role"
   path = "/"
@@ -82,12 +105,14 @@ resource "aws_iam_policy" "lambda_policy" {
                 "cloudwatch:*",
                 "logs:*",
                 "sns:*",
+                "sqs:*",
                 "ssm:DescribeParameters",
                 "ssm:GetParameters",
                 "ssm:GetParameter",
                 "ssm:GetParametersByPath",
                 "kms:*",
                 "kinesis:*",
+                "xray:*",
                 "glue:*"
             ],
             "Resource": "*"
@@ -124,6 +149,19 @@ resource "aws_lambda_permission" "allow_cloudwatch_to_call_glue_crawler_trigger"
   function_name = "${aws_lambda_function.finance_crawler_trigger.function_name}"
   principal     = "events.amazonaws.com"
   source_arn    = "${aws_cloudwatch_event_rule.crawler_state_change.arn}"
+}
+
+resource "aws_lambda_permission" "allow_sqs_source_trigger" {
+  statement_id  = "AllowExecutionFromSQS"
+  action        = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.crawler_state_change_listener.function_name}"
+  principal     = "sqs.amazonaws.com"
+  source_arn    = "${aws_sqs_queue.finance_streaming_queue.arn}"
+}
+
+resource "aws_lambda_event_source_mapping" "allow_sqs_trigger_lambda" {
+  event_source_arn = "${aws_sqs_queue.finance_streaming_queue.arn}"
+  function_name    = "${aws_lambda_function.crawler_state_change_listener.arn}"
 }
 
 resource "aws_lambda_layer_version" "lambda_python_deps_layer" {
