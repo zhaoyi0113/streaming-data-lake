@@ -29,8 +29,8 @@ resource "aws_cloudwatch_event_rule" "crawler_state_change" {
 PATTERN
 }
 
-resource "aws_cloudwatch_event_target" "trigger_glue_job_lambda" {
+resource "aws_cloudwatch_event_target" "raw_crawler_state_change_to_sqs" {
   rule      = "${aws_cloudwatch_event_rule.crawler_state_change.name}"
-  target_id = "SendToLambda"
-  arn       = "${aws_lambda_function.finance_crawler_trigger.arn}"
+  target_id = "SendToSQS"
+  arn = "${aws_sqs_queue.finance_streaming_queue.arn}"
 }
